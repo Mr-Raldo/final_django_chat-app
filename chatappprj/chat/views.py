@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 def home(request):
     return render(request, 'home.html')
 
-
+# * function retrieves room details and renders the 'room.html' template.
 def room(request, room):
     username = request.GET.get('username') 
     room_details = Room.objects.get(name=room)
@@ -16,7 +16,8 @@ def room(request, room):
         'room_details': room_details,
     })
 
-
+# * function checks if a room exists and redirects to the room with 
+# * the provided username, or creates a new room and redirects to it.
 def checkview(request):
     room = request.POST['room_name']
     username = request.POST['username']
@@ -27,7 +28,10 @@ def checkview(request):
         new_room = Room.objects.create(name=room)
         new_room.save()
         return redirect('/'+room+'/?username='+username)
+    
 
+
+# * function handles sending messages to a specific room
 def send(request):
     message = request.POST['message']
     username = request.POST['username']
@@ -37,6 +41,7 @@ def send(request):
     new_message.save()
     # return HttpResponse("Hi, Message Sent Successfully!!")
 
+# *function retrieves messages for a specific room and returns them as JSON
 def getMessages(request,  room):
     room_details = Room.objects.get(name=room)
     messages = Message.objects.filter(room=room_details.id)
